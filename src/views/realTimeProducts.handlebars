@@ -1,25 +1,66 @@
-<h1>Productos een tiempo real</h1>
-<div style="margin-bottom: 20px; padding: 15px; border: 1px solid #333; background: #f9f9f9;">
-    <h3>Agregar nuevo producto</h3>
-    <form id="productForm">
-        <input type="text" id="title" placeholder="Titulo" required>
-        <input type="text" id="description" placeholder="Descripcion" required>
-        <input type="text" id="code" placeholder="Codigo unico" required>
-        <input type="number" id="price" placeholder="Precio" required>
-        <input type="number" id="stock" placeholder="Stock" required>
-        <input type="text" id="category" placeholder="Category" required>
-        <button type="submit">Crear Producto</button>
-    </form>
+<div class="row mt-4 mb-5">
+    
+    <!-- COLUMNA IZQUIERDA: Formulario -->
+    <div class="col-12 col-md-5 col-lg-4 mb-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">➕ Agregar Perfume</h5>
+            </div>
+            <div class="card-body bg-light">
+                <form id="productForm">
+                    <div class="mb-3">
+                        <label for="title" class="form-label fw-bold">Título</label>
+                        <input type="text" class="form-control" id="title" placeholder="Ej: Oud Wood" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label fw-bold">Descripción</label>
+                        <textarea class="form-control" id="description" rows="2" required></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label for="code" class="form-label fw-bold">Código</label>
+                            <input type="text" class="form-control" id="code" required>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="category" class="form-label fw-bold">Categoría</label>
+                            <input type="text" class="form-control" id="category" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 mb-4">
+                            <label for="price" class="form-label fw-bold">Precio ($)</label>
+                            <input type="number" class="form-control" id="price" required>
+                        </div>
+                        <div class="col-6 mb-4">
+                            <label for="stock" class="form-label fw-bold">Stock</label>
+                            <input type="number" class="form-control" id="stock" required>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-dark w-100 fw-bold">Guardar Producto</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- COLUMNA DERECHA: Lista en Tiempo Real -->
+    <div class="col-12 col-md-7 col-lg-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Inventario en Vivo</h5>
+                <span class="badge bg-danger rounded-pill px-3 animacion-pulso">🔴 Live</span>
+            </div>
+            <div class="card-body p-0">
+                <!-- list-group-flush quita los bordes exteriores para que se vea más limpio -->
+                <ul id="productList" class="list-group list-group-flush">
+                    <!-- Los productos se inyectarán aquí mágicamente desde JS -->
+                </ul>
+            </div>
+        </div>
+    </div>
+
 </div>
 
-<h3>Lista dinamica:</h3>
-<ul id="productList">
-    {{#each products}}
-    <li>
-        <strong>{{this.title}}</strong> - ${{this.price}}
-    </li>
-    {{/each}}
-</ul>
-
+<!-- No olvides mantener tus scripts al final de este archivo -->
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/realtime.js"></script>

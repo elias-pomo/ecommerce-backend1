@@ -1,17 +1,32 @@
-const e = require("express");
-
 const socket = io();
 
 //escuchamos el evento desde el servidor para actualizar la vista
 socket.on('updateProducts', (products) => {
     const productList = document.getElementById('productList');
-    productList.innerHTML = ''; //limpiador de lista actual
-    products.array.forEach(products => {
+    productList.innerHTML = ''; // Limpiador de lista actual
+    
+    products.forEach(product => {
         const li = document.createElement('li');
+        li.className = 'list-group-item d-flex justify-content-between align-items-center p-3 shadow-sm mb-2 rounded';
+        
+        // ESTRUCTURA VISUAL DE CADA PRODUCTO EN LA LISTA
         li.innerHTML = `
-            <strong>${productList.title}</strong> - $${product.price}
-            <button onclick="deleteProduct('${product.__id}')">Eliminar</button>
+            <div>
+                <h5 class="mb-1 fw-bold text-dark">${product.title}</h5>
+                <small class="text-muted">
+                    <strong>Cód:</strong> ${product.code} | 
+                    <strong>Stock:</strong> ${product.stock} | 
+                    <strong>Cat:</strong> ${product.category}
+                </small>
+            </div>
+            <div class="d-flex align-items-center">
+                <span class="badge bg-success fs-6 me-3 px-3 py-2">$${product.price}</span>
+                <button class="btn btn-outline-danger btn-sm fw-bold" onclick="deleteProduct('${product._id}')">
+                    Eliminar 🗑️
+                </button>
+            </div>
         `;
+        
         productList.appendChild(li);
     });
 });
@@ -21,10 +36,10 @@ document.getElementById('productForm').addEventListener('submit', (e) =>{
     e.preventDefault();
     const newProduct = {
         title: document.getElementById('title').value,
-        descripcion: document.getElementById('description').value,
+        description: document.getElementById('description').value,
         code: document.getElementById('code').value,
-        price: document.getElementById('price').value,
-        stock: document.getElementById('stock').value,
+        price: Number(document.getElementById('price').value),
+        stock: Number(document.getElementById('stock').value),
         category: document.getElementById('category').value
     };
     socket.emit('addProduct', newProduct);
@@ -33,5 +48,5 @@ document.getElementById('productForm').addEventListener('submit', (e) =>{
 
 //funcion para eliminar un producto
 function deleteProduct(id){
-    socket.io('deleteProduct', id);
+    socket.emit('deleteProduct', id);
 }
