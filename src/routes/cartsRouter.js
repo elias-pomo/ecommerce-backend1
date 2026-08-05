@@ -27,14 +27,14 @@ router.get('/:cid', async (req, res) => {
 });
 
 // Agregar un producto a un carrito
-router.post('/:cid/product/:pid', async (req, res) => {
+router.post('/:cid/products/:pid', async (req, res) => {
     try {
         const { cid, pid } = req.params;
         const cart = await cartModel.findById(cid);
         if (!cart) {
             return res.status(404).json({ status: 'error', error: 'Carrito no encontrado' });
         }
-        const productIndex = cart.products.findIndex(item => item.product.toString() === pid);
+        const productIndex = cart.products.findIndex(item => item.product._id.toString() === pid);
         if (productIndex  !== -1) {
             // Si el producto ya existe en el carrito, incrementa la cantidad
             cart.products[productIndex].quantity += 1;
@@ -45,6 +45,7 @@ router.post('/:cid/product/:pid', async (req, res) => {
         await cart.save();
         res.status(200).json({ status: 'success', payload: cart });
     } catch (error){
+        console.log("Error en DELETE:", error);
         res.status(500).json({status: 'error', error: 'Error al agregar el producto al carrito'});
     }
 });
@@ -88,7 +89,7 @@ router.put('/:cid', async (req, res) => {
 });
 
 // actualizar la cantidad de un producto en especifico de un carrito
-router.put('/:cid/product/:pid', async (req, res) => {
+router.put('/:cid/products/:pid', async (req, res) => {
     try{
         const {cid, pid} = req.params;
         const {quantity} = req.body;
@@ -100,12 +101,13 @@ router.put('/:cid/product/:pid', async (req, res) => {
         if(!cart){
             return res.status(404).json({status: 'error', error: 'Carrito no encontrado'});
         }
-        const productIndex = cart.products.findIndex(item => item.product.toString() === pid);
+        const productIndex = cart.products.findIndex(item => item.product._id.toString() === pid);
         if(productIndex !== -1){
             cart.products[productIndex].quantity = quantity;
             await cart.save();
             res.json({status: 'success', payload: cart});
         }else{
+            console.log("Error en:", error);
             res.status(404).json({status: 'error', error: 'Producto no encontrado en el carrito'});
         }
     }catch (error){

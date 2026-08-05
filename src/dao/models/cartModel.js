@@ -7,12 +7,12 @@ const cartSchema = new mongoose.Schema({
 products: {
     type: [
         {
-        products: {
+        product: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'products', // referencia exacta al nombre de la colección de productos
             required: true
         },
-        quality: {
+        quantity: {
             type: Number,
             required: true,
             default: 1
@@ -25,7 +25,7 @@ products: {
 
 //middleware para que cada vez que hagamos un findone o find, nos traiga los productos con toda su información
 cartSchema.pre('findOne', function() {
-    this.populate('products.products'); // 'products.products' hace referencia al campo 'products' dentro del array 'products'
+    this.populate('products.product'); // 'products.products' hace referencia al campo 'products' dentro del array 'products'
 });
 
 const cartModel = mongoose.model(cartCollection, cartSchema);
