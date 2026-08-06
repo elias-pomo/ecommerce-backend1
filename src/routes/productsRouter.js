@@ -7,7 +7,7 @@ const router = Router();
 // 1_  get api/products: listar productos con paginación, filtrado y ordenamiento
 router.get('/', async (req, res) => {
     try {
-        let { limit = 12, page = 1, sort, query} = req.query;
+        let { limit = 12, page = 1, sort, query, search } = req.query;
         limit = parseInt(limit);
         page = parseInt(page);
 
@@ -19,14 +19,19 @@ router.get('/', async (req, res) => {
                 filter.status = query.toLowerCase() === 'true';
             }else {
                 //filtramos por categoría
-                filter.category = query;
+                filter.category = { $regex: query, $options: 'i' };
             }
         }
+        if (search && search.trim() !== '') {
+    filter.title = { $regex: search, $options: 'i' };
+}
 
         let sortOption = {};
         if (sort) {
             if (sort === 'asc') sortOption.price = 1;
             else if (sort === 'desc') sortOption.price = -1;
+            else if (sort === 'title_asc') sortOption.title = 1;
+            else if (sort === 'title_desc') sortOption.title = -1;
         }
 
         const options = {
@@ -35,14 +40,17 @@ router.get('/', async (req, res) => {
             sort: sortOption,
             lean: true // para que devuelva objetos planos en lugar de documentos de Mongoose
         };
-
         const result = await productModel.paginate(filter, options);
 
         // constructor de los enlaces prev y next
         const baseUrl = `${req.protocol}://${req.get('host')}${req.baseUrl}`;
         const buildLink = (pageNumber) => {
             if (!pageNumber) return null;
-            return `${baseUrl}?limit=${limit}&page=${pageNumber}${sort ? `&sort=${sort}` : ''}${query ? `&query=${query}` : ''}`;
+            let link = `${baseUrl}?limit=${limit}&page=${pageNumber}`;
+            if (sort) link += `&sort=${sort}`;
+            if (query) link += `&query=${query}`;
+            if (search) link += `&search=${search}`;
+            return link;
         };
 
         res.json({
