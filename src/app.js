@@ -7,11 +7,15 @@ const productsRouter = require('./routes/productsRouter');
 const cartsRouter = require('./routes/cartsRouter');
 const viewsRouter = require('./routes/viewsRouter');
 const productModel = require('./dao/models/productModel');
+const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
 //MIdlewares
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
 app.use(express.static(path.join(__dirname, 'public')));

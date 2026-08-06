@@ -7,7 +7,7 @@ const router = Router();
 // 1_  get api/products: listar productos con paginación, filtrado y ordenamiento
 router.get('/', async (req, res) => {
     try {
-        let { limit = 10, page = 1, sort, query} = req.query;
+        let { limit = 12, page = 1, sort, query} = req.query;
         limit = parseInt(limit);
         page = parseInt(page);
 
