@@ -75,7 +75,7 @@ router.get('/', async (req, res) => {
 router.post('/', upload.single('image'), async (req, res) => {
     try {
         // req.body tiene los datos de texto (title, price, etc.)
-        const { title, description, code, price, stock, category } = req.body;
+        const { title, description, code, price, stock, brand, category } = req.body;
         
         // req.file tiene la información de la imagen que ya se subió a Cloudinary
         // req.file.path contiene la URL pública y lista para usar
@@ -86,6 +86,7 @@ router.post('/', upload.single('image'), async (req, res) => {
             description,
             code,
             price,
+            brand,
             stock,
             category,
             thumbnails: [imageUrl] // ¡Guardamos la URL en tu base de datos!
